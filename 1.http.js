@@ -3,7 +3,7 @@ const http = require('node:http')
 
 console.log(process.env)
 
-const desiredPort = process.env.PORT ?? 3000
+const desiredPort = process.env.PORT ?? 3005
 
 const processRequest = (req, res) => {
     res.setHeader('Content-Type', 'text/html; charset=utf-8')
@@ -23,5 +23,5 @@ const processRequest = (req, res) => {
 const server = http.createServer(processRequest)
 
 server.listen(desiredPort, () => {
-    console.log(`server rlistenning on port http://localhost${desiredPort}`)
+    console.log(`server listenning on port http://localhost${desiredPort}`)
 })
