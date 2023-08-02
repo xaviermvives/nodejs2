@@ -7,6 +7,13 @@ const PORT = process.env.PORT ?? 3005
 const app = express()
 app.disable('x-powered-by')
 
+app.use((req, res, next) => {
+    console.log('mi primer middleware')
+    // trackear la request a la base de datos
+    // revisar si el usuario tiene cookies
+    next()
+})
+
 app.get('/pokemon/ditto', (req, res) => {
     // res.status(200).send('<h1>Mi página</h1>')
     // eslint-disable-next-line indent
