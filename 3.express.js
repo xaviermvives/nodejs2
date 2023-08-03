@@ -7,28 +7,7 @@ const PORT = process.env.PORT ?? 3005
 const app = express()
 app.disable('x-powered-by')
 
-app.use((req, res, next) => {
-    if (req.method !== 'POST') return next()
-    if (req.headers['content-type'] !== 'application/json') return next()
-
-    // solo llegan request que son POST y que tienen el header Content-Type: application/json
-    let body = ''
-
-    // escuchar evento data
-    req.on('data', chunk => {
-        body += chunk.toString()
-    })
-
-    // cuando termine
-    req.on('end', () => {
-        const data = JSON.parse(body)
-        // llamar a una base de datos par guardar la info
-        data.timestamp = Date.now()
-        // mutar la reqquest y meter la información en el req.body
-        req.body = data
-        next()
-    })
-})
+app.use(express.json())
 
 app.get('/pokemon/ditto', (req, res) => {
     // res.status(200).send('<h1>Mi página</h1>')
