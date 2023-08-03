@@ -8,10 +8,26 @@ const app = express()
 app.disable('x-powered-by')
 
 app.use((req, res, next) => {
-    console.log('mi primer middleware')
-    // trackear la request a la base de datos
-    // revisar si el usuario tiene cookies
-    next()
+    if (req.method !== 'POST') return next()
+    if (req.headers['content-type'] !== 'application/json') return next()
+
+    // solo llegan request que son POST y que tienen el header Content-Type: application/json
+    let body = ''
+
+    // escuchar evento data
+    req.on('data', chunk => {
+        body += chunk.toString()
+    })
+
+    // cuando termine
+    req.on('end', () => {
+        const data = JSON.parse(body)
+        // llamar a una base de datos par guardar la info
+        data.timestamp = Date.now()
+        // mutar la reqquest y meter la información en el req.body
+        req.body = data
+        next()
+    })
 })
 
 app.get('/pokemon/ditto', (req, res) => {
@@ -22,19 +38,8 @@ app.get('/pokemon/ditto', (req, res) => {
 })
 
 app.post('/pokemon', (req, res) => {
-    let body = ''
-
-    // escuchar evento data
-    req.on('data', chunk => {
-        body += chunk.toString()
-    })
-
-    req.on('end', () => {
-        const data = JSON.parse(body)
-        // llamar a una base de datos par guardar la info
-        data.timestamp = Date.now()
-        res.status(201).json(data)
-    })
+    // req.body deberíamos guardar en bbdd
+    res.status(201).json(req.body)
 })
 
 // la última a la que va a pasar
